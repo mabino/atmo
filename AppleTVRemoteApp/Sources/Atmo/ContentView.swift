@@ -9,6 +9,9 @@ struct ContentView: View {
     @State private var columnVisibility: NavigationSplitViewVisibility = .all
     // Prevent sending a SingleTap after we've already dispatched a Hold for Home.
     @State private var homeHoldTriggered = false
+    // Disclosure group states
+    @State private var pairedDevicesExpanded = true
+    @State private var discoveredDevicesExpanded = true
 
     var body: some View {
         Group {
@@ -173,18 +176,32 @@ struct ContentView: View {
     private var sidebarContent: some View {
         List {
             if !viewModel.pairedDevices.isEmpty {
-                Section(header: Text("Paired Devices").accessibilityHeading(.h2)) {
-                    ForEach(viewModel.pairedDevices) { device in
-                        selectableRow(for: device)
+                DisclosureGroup(
+                    isExpanded: $pairedDevicesExpanded,
+                    content: {
+                        ForEach(viewModel.pairedDevices) { device in
+                            selectableRow(for: device)
+                        }
+                    },
+                    label: {
+                        Text("Paired Devices")
+                            .accessibilityHeading(.h2)
                     }
-                }
+                )
             }
 
-            Section(header: Text("Discovered Devices").accessibilityHeading(.h2)) {
-                ForEach(viewModel.unpairedDevices) { device in
-                    selectableRow(for: device)
+            DisclosureGroup(
+                isExpanded: $discoveredDevicesExpanded,
+                content: {
+                    ForEach(viewModel.unpairedDevices) { device in
+                        selectableRow(for: device)
+                    }
+                },
+                label: {
+                    Text("Discovered Devices")
+                        .accessibilityHeading(.h2)
                 }
-            }
+            )
 
             Section {
                 if viewModel.isLoading {
