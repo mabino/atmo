@@ -2,6 +2,8 @@
 
 Atmo is a macOS SwiftUI application for discovering and controlling Apple TV devices using the [`pyatv`](https://github.com/postlund/pyatv) library via an embedded Python bridge.
 
+![Main Interface](screenshots/main-interface.png)
+
 ## Features
 - Discover and pair Apple TV devices on the local network.
 - Control playback via remote buttons or keyboard shortcuts.
@@ -48,7 +50,11 @@ Open the app and allow it to discover devices on the local network.
 
 Click on a discovered Apple TV and click the Pair button.
 
+![Remote Control Interface](screenshots/remote-control.png)
+
 Access File ▸ Print Discovered Devices (`⌘P`) for a printable summary of hostnames, services, and identifiers.
+
+![Remote Menu](screenshots/remote-menu.png)
 
 ## Todo
 
