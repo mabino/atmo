@@ -1,4 +1,4 @@
-# Atmo (macOS)
+# Atmo - Apple TV Remote
 
 Atmo is a macOS SwiftUI application for discovering and controlling Apple TV devices using the [`pyatv`](https://github.com/postlund/pyatv) library via an embedded Python bridge.
 
