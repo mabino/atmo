@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:atmo}/AppleTVRemoteApp",
+            "name": "Debug Atmo (AppleTVRemoteApp)",
+            "program": "${workspaceFolder:atmo}/AppleTVRemoteApp/.build/debug/Atmo",
+            "preLaunchTask": "swift: Build Debug Atmo (AppleTVRemoteApp)"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:atmo}/AppleTVRemoteApp",
+            "name": "Release Atmo (AppleTVRemoteApp)",
+            "program": "${workspaceFolder:atmo}/AppleTVRemoteApp/.build/release/Atmo",
+            "preLaunchTask": "swift: Build Release Atmo (AppleTVRemoteApp)"
+        }
+    ]
+}
