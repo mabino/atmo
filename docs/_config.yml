@@ -1,0 +1,37 @@
+title: "Atmo - Apple TV Remote"
+description: "A beautiful macOS SwiftUI application for discovering and controlling Apple TV devices"
+url: "https://mabino.github.io"
+baseurl: "/atmo"
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+theme: minima
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+
+# Collections
+collections:
+  docs:
+    output: true
+    permalink: /docs/:name/
+
+# Exclude from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - vendor/
+  - .bundle/
+  - .sass-cache/
+  - .jekyll-cache/
+  - gemfiles/
+
+# Include files
+include:
+  - _pages
+
+# Sass/SCSS
+sass:
+  sass_dir: _sass
+  style: compressed
