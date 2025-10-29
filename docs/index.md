@@ -77,19 +77,19 @@ description: A beautiful macOS SwiftUI application for discovering and controlli
 
     <div class="screenshot-grid">
       <div class="screenshot">
-        <img src="{{ '/screenshots/main-interface.png' | relative_url }}" alt="Main Interface" />
+        <img src="{{ '/assets/images/main-interface.png' | relative_url }}" alt="Main Interface" />
         <h4>Main Interface</h4>
         <p>Clean, modern interface showing discovered and paired Apple TV devices.</p>
       </div>
 
       <div class="screenshot">
-        <img src="{{ '/screenshots/remote-control.png' | relative_url }}" alt="Remote Control" />
+        <img src="{{ '/assets/images/remote-control.png' | relative_url }}" alt="Remote Control" />
         <h4>Remote Control</h4>
         <p>Intuitive remote control interface with all essential Apple TV functions.</p>
       </div>
 
       <div class="screenshot">
-        <img src="{{ '/screenshots/remote-menu.png' | relative_url }}" alt="Menu Options" />
+        <img src="{{ '/assets/images/remote-menu.png' | relative_url }}" alt="Menu Options" />
         <h4>Menu & Options</h4>
         <p>Access to device reports and additional configuration options.</p>
       </div>
