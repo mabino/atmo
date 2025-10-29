@@ -144,12 +144,6 @@ description: Atmo is a macOS app for discovering and controlling Apple TV device
         <div>
           <h3>Install Python Dependencies</h3>
           <p>Set up the Python virtual environment and install required packages.</p>
-          <div class="code-block">
-            <code>cd AppleTVRemoteApp
-python3 -m venv ../.venv
-../.venv/bin/pip install pyatv
-bash Scripts/package_python.sh</code>
-          </div>
         </div>
       </div>
 
@@ -158,10 +152,6 @@ bash Scripts/package_python.sh</code>
         <div>
           <h3>Build and Run the App</h3>
           <p>Compile the SwiftUI application and launch it.</p>
-          <div class="code-block">
-            <code>xcrun swift build
-xcrun swift run Atmo</code>
-          </div>
         </div>
       </div>
 
@@ -184,28 +174,3 @@ xcrun swift run Atmo</code>
   </div>
 </section>
 
-<section id="docs" class="section">
-  <div class="container">
-    <h2>Documentation</h2>
-
-    <div class="features-grid">
-      <div class="feature-card">
-        <h4><i class="fas fa-book"></i>Prerequisites</h4>
-        <p>Development setup guide including macOS requirements, Python environment, and tooling.</p>
-        <a href="{{ '/docs/prerequisites/' | relative_url }}" class="btn btn-ghost">Read More</a>
-      </div>
-
-      <div class="feature-card">
-        <h4><i class="fas fa-code"></i>pyatv API Notes</h4>
-        <p>Notes on the pyatv library integration, discovery, pairing, and control interfaces.</p>
-        <a href="{{ '/docs/pyatv_api_notes/' | relative_url }}" class="btn btn-ghost">Read More</a>
-      </div>
-
-      <div class="feature-card">
-        <h4><i class="fab fa-github"></i> Source Code</h4>
-        <p>Explore source code on GitHub with documentation and examples.</p>
-        <a href="https://github.com/mabino/atmo" class="btn btn-ghost" target="_blank">View Repository</a>
-      </div>
-    </div>
-  </div>
-</section>
