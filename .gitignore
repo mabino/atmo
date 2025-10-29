@@ -24,3 +24,5 @@ pip-wheel-metadata/
 .nox/
 *.dist-info/
 .DS_Store
+*.swp
+*.swo
