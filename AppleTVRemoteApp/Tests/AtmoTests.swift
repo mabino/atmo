@@ -1301,3 +1301,116 @@ final class InheritingProcessTests: XCTestCase {
         XCTAssertThrowsError(try process.run())
     }
 }
+
+final class DeviceInfoFormatterTests: XCTestCase {
+    private func makeDevice(
+        id: String = "aa:bb:cc:dd:ee:ff",
+        model: String? = "AppleTV14,1",
+        deepSleep: Bool = true,
+        identifiers: [String] = ["aa:bb:cc:dd:ee:ff", "secondary-id"],
+        powerState: PowerStateStatus? = nil,
+        protocols: [BridgeProtocol] = []
+    ) -> BridgeDevice {
+        BridgeDevice(
+            id: id,
+            name: "Living Room",
+            address: "10.0.0.10",
+            model: model,
+            deepSleep: deepSleep,
+            identifiers: identifiers,
+            protocols: protocols,
+            mainIdentifier: id,
+            powerState: powerState
+        )
+    }
+
+    private func value(for label: String, in rows: [DeviceInfoRow]) -> String? {
+        rows.first { $0.label == label }?.value
+    }
+
+    func testWindowTitleUsesDeviceName() {
+        XCTAssertEqual(DeviceInfoFormatter.windowTitle(for: makeDevice()), "Living Room Info")
+        XCTAssertEqual(DeviceInfoFormatter.windowTitle(for: nil), "Device Info")
+    }
+
+    func testRowsIncludeCoreDeviceFields() {
+        let rows = DeviceInfoFormatter.rows(for: makeDevice(), isPaired: true, lastKnownPowerState: nil)
+
+        XCTAssertEqual(value(for: "Name", in: rows), "Living Room")
+        XCTAssertEqual(value(for: "Model", in: rows), "AppleTV14,1")
+        XCTAssertEqual(value(for: "IP Address", in: rows), "10.0.0.10")
+        XCTAssertEqual(value(for: "Identifier", in: rows), "aa:bb:cc:dd:ee:ff")
+        XCTAssertEqual(value(for: "Other Identifier", in: rows), "secondary-id")
+        XCTAssertEqual(value(for: "Paired", in: rows), "Yes")
+        XCTAssertEqual(value(for: "Deep Sleep", in: rows), "Yes")
+    }
+
+    func testRowsHandleMissingOptionalFields() {
+        let device = makeDevice(model: nil, deepSleep: false, identifiers: ["aa:bb:cc:dd:ee:ff"])
+        let rows = DeviceInfoFormatter.rows(for: device, isPaired: false, lastKnownPowerState: nil)
+
+        XCTAssertEqual(value(for: "Model", in: rows), "Unknown")
+        XCTAssertNil(value(for: "Other Identifier", in: rows))
+        XCTAssertNil(value(for: "Other Identifiers", in: rows))
+        XCTAssertEqual(value(for: "Paired", in: rows), "No")
+        XCTAssertEqual(value(for: "Deep Sleep", in: rows), "No")
+        XCTAssertEqual(value(for: "Power State", in: rows), "Unknown")
+    }
+
+    func testPowerStatePrefersLastKnownState() {
+        let device = makeDevice(powerState: .off)
+
+        let rows = DeviceInfoFormatter.rows(for: device, isPaired: true, lastKnownPowerState: .on)
+        XCTAssertEqual(value(for: "Power State", in: rows), "On")
+
+        let fallbackRows = DeviceInfoFormatter.rows(for: device, isPaired: true, lastKnownPowerState: nil)
+        XCTAssertEqual(value(for: "Power State", in: fallbackRows), "Off")
+    }
+
+    func testMultipleOtherIdentifiersJoinedWithNewlines() {
+        let device = makeDevice(identifiers: ["aa:bb:cc:dd:ee:ff", "id-two", "id-three"])
+        let rows = DeviceInfoFormatter.rows(for: device, isPaired: false, lastKnownPowerState: nil)
+
+        XCTAssertEqual(value(for: "Other Identifiers", in: rows), "id-two\nid-three")
+    }
+
+    func testProtocolRows() {
+        let bridgeProtocol = BridgeProtocol(
+            protocolName: "companion",
+            identifier: nil,
+            port: 49152,
+            requiresPassword: true,
+            pairing: "mandatory",
+            credentialsPresent: true,
+            passwordPresent: false,
+            enabled: true
+        )
+
+        let rows = DeviceInfoFormatter.protocolRows(for: bridgeProtocol)
+
+        XCTAssertEqual(value(for: "Port", in: rows), "49152")
+        XCTAssertEqual(value(for: "Pairing", in: rows), "Mandatory")
+        XCTAssertEqual(value(for: "Credentials", in: rows), "Stored")
+        XCTAssertEqual(value(for: "Password", in: rows), "Required, not stored")
+        XCTAssertEqual(value(for: "Enabled", in: rows), "Yes")
+    }
+
+    func testProtocolRowsOmitPasswordWhenNotRequired() {
+        let bridgeProtocol = BridgeProtocol(
+            protocolName: "airplay",
+            identifier: nil,
+            port: 7000,
+            requiresPassword: false,
+            pairing: "optional",
+            credentialsPresent: false,
+            passwordPresent: false,
+            enabled: false
+        )
+
+        let rows = DeviceInfoFormatter.protocolRows(for: bridgeProtocol)
+
+        XCTAssertNil(value(for: "Password", in: rows))
+        XCTAssertEqual(value(for: "Credentials", in: rows), "Not stored")
+        XCTAssertEqual(value(for: "Enabled", in: rows), "No")
+    }
+}

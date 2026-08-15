@@ -127,7 +127,13 @@ struct AtmoApp: App {
                 }
                 .keyboardShortcut("p")
             }
-            CommandGroup(replacing: .saveItem) { }
+            CommandGroup(replacing: .saveItem) {
+                Button("Get Info") {
+                    DeviceInfoWindowController.shared.showInfo(using: bridge)
+                }
+                .keyboardShortcut("i", modifiers: [.command])
+                .disabled(bridge.selectedDevice == nil)
+            }
         }
 
         Settings {
