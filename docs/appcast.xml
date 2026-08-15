@@ -4,6 +4,30 @@
     <channel>
         <title>Atmo</title>
         <item>
+            <title>1.6.0</title>
+            <pubDate>Sat, 15 Aug 2026 08:24:32 -0400</pubDate>
+            <sparkle:version>1.6.0</sparkle:version>
+            <sparkle:shortVersionString>1.6.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
+            <description><![CDATA[<h2>Atmo 1.6.0</h2>
+<p>Atmo 1.6 adds a device Get Info window and smarter install-location detection.</p>
+
+<h3>New</h3>
+<ul>
+  <li><b>Get Info</b> — press Command-I (or choose File &gt; Get Info) to open a window with full details about the selected device: model, IP address, identifiers, pairing status, power state, and per-protocol pairing and credential information. The window updates live as you switch devices</li>
+</ul>
+
+<h3>Improved</h3>
+<ul>
+  <li><b>Install-location check</b> — Atmo no longer asks you to move it to Applications when it is already in /Applications or ~/Applications, including on first launch of a freshly downloaded copy</li>
+</ul>
+
+<p>Requires macOS 14 or later.</p>
+]]></description>
+            <enclosure url="https://github.com/binoio/atmo/releases/download/v1.6.0/Atmo-1.6.0.zip" length="69565231" type="application/octet-stream" sparkle:edSignature="57ipExUNXSpbrZUywe8QnGPfW51coOmJeUTS5o4z+B3W8wBaM0RseUfdq9qOHJGkxa/iin9W6mbV5zjNVUehCQ=="/>
+        </item>
+        <item>
             <title>1.5.0</title>
             <pubDate>Thu, 06 Aug 2026 21:53:46 -0400</pubDate>
             <sparkle:version>1.5.0</sparkle:version>
