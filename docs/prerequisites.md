@@ -1,7 +1,7 @@
 # Development Prerequisites
 
 ## macOS Requirements
-- macOS 13 Ventura or later
+- macOS 14 Sonoma or later
 - Xcode 16+ with command-line tools installed (`xcode-select --install`)
 - Swift toolchain that supports SwiftUI for macOS (bundled with Xcode)
 

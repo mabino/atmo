@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "Atmo",
     platforms: [
-        .macOS(.v13)
+        .macOS(.v14)
     ],
     dependencies: [
         .package(url: "https://github.com/sparkle-project/Sparkle", from: "2.6.0")

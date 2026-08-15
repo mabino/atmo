@@ -179,26 +179,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 @MainActor
 private extension AtmoApp {
     static func promptToMoveOutOfDownloadsIfNeeded() -> Bool {
-        let bundleURL = Bundle.main.bundleURL.resolvingSymlinksInPath()
-        let parentDirectory = bundleURL.deletingLastPathComponent()
+        // Judge by where the app actually lives on disk: when Gatekeeper
+        // translocation is active the running bundle URL is a randomized
+        // mount, not the user's chosen location.
+        let bundleURL = AppLocationCheck.effectiveBundleURL()
+        let allowedDirectories = AppLocationCheck.approvedInstallDirectories()
 
         let fileManager = FileManager.default
-        let systemApplications = URL(fileURLWithPath: "/Applications", isDirectory: true)
-        // Under App Sandbox, homeDirectoryForCurrentUser is the container home
-        // (~/Library/Containers/…), which would make ~/Applications never match.
-        // Resolve the real home via the passwd database instead.
-        let realHome = String(cString: getpwuid(getuid()).pointee.pw_dir)
-        let userApplications = URL(fileURLWithPath: realHome, isDirectory: true)
-            .appendingPathComponent("Applications", isDirectory: true)
-
-        let allowedDirectories = [systemApplications, userApplications]
-        let isInApprovedLocation = allowedDirectories.contains { allowed in
-            let allowedPath = allowed.standardizedFileURL.path
-            let parentPath = parentDirectory.standardizedFileURL.path
-            return parentPath == allowedPath || parentPath.hasPrefix(allowedPath + "/")
-        }
-
-        guard !isInApprovedLocation else { return true }
+        guard !AppLocationCheck.isInApprovedLocation(
+            bundleURL: bundleURL,
+            approvedDirectories: allowedDirectories
+        ) else { return true }
 
         let alert = NSAlert()
         alert.alertStyle = .warning
@@ -213,7 +204,8 @@ private extension AtmoApp {
 
         switch response {
         case .alertFirstButtonReturn:
-            let destination = allowedDirectories.first { fileManager.fileExists(atPath: $0.path) } ?? systemApplications
+            let destination = allowedDirectories.first { fileManager.fileExists(atPath: $0.path) }
+                ?? URL(fileURLWithPath: "/Applications", isDirectory: true)
             NSWorkspace.shared.open(destination)
             return true
         case .alertSecondButtonReturn:

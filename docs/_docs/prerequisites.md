@@ -11,7 +11,7 @@ description: Complete development setup guide for Atmo
     <div class="content">
       <h2>macOS Requirements</h2>
       <ul>
-        <li>macOS 13 Ventura or later</li>
+        <li>macOS 14 Sonoma or later</li>
         <li>Xcode 16+ with command-line tools installed (<code>xcode-select --install</code>)</li>
         <li>Swift toolchain that supports SwiftUI for macOS (bundled with Xcode)</li>
       </ul>

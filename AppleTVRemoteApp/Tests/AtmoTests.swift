@@ -1414,3 +1414,56 @@ final class DeviceInfoFormatterTests: XCTestCase {
         XCTAssertEqual(value(for: "Enabled", in: rows), "No")
     }
 }
+
+final class AppLocationCheckTests: XCTestCase {
+    private let approved = AppLocationCheck.approvedInstallDirectories(realHome: "/Users/testuser")
+
+    func testApprovedDirectoriesCoverSystemAndUserApplications() {
+        XCTAssertEqual(approved.map(\.path), ["/Applications", "/Users/testuser/Applications"])
+    }
+
+    func testSystemApplicationsIsApproved() {
+        let url = URL(fileURLWithPath: "/Applications/Atmo.app")
+        XCTAssertTrue(AppLocationCheck.isInApprovedLocation(bundleURL: url, approvedDirectories: approved))
+    }
+
+    func testUserApplicationsIsApproved() {
+        let url = URL(fileURLWithPath: "/Users/testuser/Applications/Atmo.app")
+        XCTAssertTrue(AppLocationCheck.isInApprovedLocation(bundleURL: url, approvedDirectories: approved))
+    }
+
+    func testSubdirectoryOfApplicationsIsApproved() {
+        let url = URL(fileURLWithPath: "/Applications/Utilities/Atmo.app")
+        XCTAssertTrue(AppLocationCheck.isInApprovedLocation(bundleURL: url, approvedDirectories: approved))
+    }
+
+    func testDownloadsIsNotApproved() {
+        let url = URL(fileURLWithPath: "/Users/testuser/Downloads/Atmo.app")
+        XCTAssertFalse(AppLocationCheck.isInApprovedLocation(bundleURL: url, approvedDirectories: approved))
+    }
+
+    func testSimilarlyNamedDirectoryIsNotApproved() {
+        let url = URL(fileURLWithPath: "/ApplicationsBackup/Atmo.app")
+        XCTAssertFalse(AppLocationCheck.isInApprovedLocation(bundleURL: url, approvedDirectories: approved))
+    }
+
+    func testTranslocationStylePathIsNotApprovedWithoutResolution() {
+        let url = URL(fileURLWithPath: "/private/var/folders/ab/xyz/T/AppTranslocation/1234-5678/d/Atmo.app")
+        XCTAssertFalse(AppLocationCheck.isInApprovedLocation(bundleURL: url, approvedDirectories: approved))
+    }
+
+    func testRealUserHomeIsNotTheSandboxContainer() {
+        let home = AppLocationCheck.realUserHome()
+        XCTAssertFalse(home.contains("/Library/Containers/"))
+        XCTAssertTrue(home.hasPrefix("/"))
+    }
+
+    func testEffectiveBundleURLReturnsInputWhenNotTranslocated() {
+        let url = URL(fileURLWithPath: "/Applications/Atmo.app")
+        XCTAssertEqual(AppLocationCheck.effectiveBundleURL(for: url), url)
+    }
+
+    func testUntranslocatedBundleURLIsNilForOrdinaryPath() {
+        XCTAssertNil(AppLocationCheck.untranslocatedBundleURL(for: URL(fileURLWithPath: "/Applications/Atmo.app")))
+    }
+}

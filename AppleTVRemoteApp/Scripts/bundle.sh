@@ -60,7 +60,7 @@ else
     <key>CFBundleVersion</key>
     <string>1.0</string>
     <key>LSMinimumSystemVersion</key>
-    <string>13.0</string>
+    <string>14.0</string>
 </dict>
 </plist>
 EOF
