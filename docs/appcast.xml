@@ -4,6 +4,25 @@
     <channel>
         <title>Atmo</title>
         <item>
+            <title>1.7.0</title>
+            <pubDate>Tue, 18 Aug 2026 21:28:36 -0400</pubDate>
+            <sparkle:version>1.7.0</sparkle:version>
+            <sparkle:shortVersionString>1.7.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
+            <description><![CDATA[<h2>Atmo 1.7.0</h2>
+<p>Atmo 1.7 adds volume controls for the selected Apple TV.</p>
+
+<h3>New</h3>
+<ul>
+  <li><b>Volume Up / Volume Down</b> — new volume buttons in the remote (full and mini layouts), Remote menu items with Control-Command-= and Control-Command-Minus shortcuts, <code>atmo://volumeup</code> and <code>atmo://volumedown</code> URL commands, and matching Shortcuts actions. Volume presses behave like the Siri Remote's volume rocker, so they also control TVs and receivers over HDMI-CEC</li>
+</ul>
+
+<p>Requires macOS 14 or later.</p>
+]]></description>
+            <enclosure url="https://github.com/binoio/atmo/releases/download/v1.7.0/Atmo-1.7.0.zip" length="69575874" type="application/octet-stream" sparkle:edSignature="jYFiBFuiibsWa282tmDguQF7qXJHSJBpAlaxvfAz8yHGQFVbKkRYvbuIo71EqzmAni9OCaW+NgwZSYM/1Z+4DQ=="/>
+        </item>
+        <item>
             <title>1.6.0</title>
             <pubDate>Sat, 15 Aug 2026 08:24:32 -0400</pubDate>
             <sparkle:version>1.6.0</sparkle:version>
