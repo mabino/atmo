@@ -111,6 +111,30 @@ struct SendPlayPauseCommandIntent: AppIntent {
     }
 }
 
+struct SendVolumeUpCommandIntent: AppIntent {
+    static let title: LocalizedStringResource = "Apple TV Remote: Volume Up"
+    static let description: LocalizedStringResource = "Send volume up command to Apple TV"
+
+    @MainActor
+    func perform() async throws -> some IntentResult {
+        let viewModel = await getBridgeViewModel()
+        viewModel.sendCommand("volume_up")
+        return .result()
+    }
+}
+
+struct SendVolumeDownCommandIntent: AppIntent {
+    static let title: LocalizedStringResource = "Apple TV Remote: Volume Down"
+    static let description: LocalizedStringResource = "Send volume down command to Apple TV"
+
+    @MainActor
+    func perform() async throws -> some IntentResult {
+        let viewModel = await getBridgeViewModel()
+        viewModel.sendCommand("volume_down")
+        return .result()
+    }
+}
+
 // MARK: - Power Commands
 
 struct TurnOnAppleTVIntent: AppIntent {

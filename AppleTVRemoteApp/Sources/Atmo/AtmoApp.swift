@@ -94,6 +94,13 @@ struct AtmoApp: App {
                     .keyboardShortcut("p", modifiers: [.control, .command])
                     .disabled(!bridge.areControlsEnabled)
                 Divider()
+                Button("Volume Up") { bridge.sendCommand("volume_up") }
+                    .keyboardShortcut("=", modifiers: [.control, .command])
+                    .disabled(!bridge.areControlsEnabled)
+                Button("Volume Down") { bridge.sendCommand("volume_down") }
+                    .keyboardShortcut("-", modifiers: [.control, .command])
+                    .disabled(!bridge.areControlsEnabled)
+                Divider()
                 Button(bridge.lastKnownPowerState == .on ? "Turn Off" : "Turn On") {
                     bridge.togglePowerState()
                 }

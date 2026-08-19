@@ -141,7 +141,7 @@ def build_parser() -> argparse.ArgumentParser:
     command_parser.add_argument(
         "--command",
         required=True,
-        help="Remote command (home/menu/select/play_pause/up/down/left/right).",
+        help="Remote command (home/menu/select/play_pause/volume_up/volume_down/up/down/left/right).",
     )
     command_parser.add_argument(
         "--action",

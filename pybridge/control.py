@@ -7,6 +7,7 @@ import contextlib
 import inspect
 import json
 import sys
+import warnings
 from dataclasses import dataclass
 from typing import Any, Optional
 
@@ -273,7 +274,54 @@ async def _invoke_remote(
         await _invoke_play_pause(atv)
         return
 
+    if command in {"volume_up", "volumeup"}:
+        await _invoke_volume(atv, up=True)
+        return
+
+    if command in {"volume_down", "volumedown"}:
+        await _invoke_volume(atv, up=False)
+        return
+
     raise ControlError(f"unsupported command: {command}")
+
+
+async def _invoke_volume(atv: AppleTV, up: bool) -> None:
+    """Send a volume step.
+
+    Prefer the RemoteControl HID button: it mirrors the Siri Remote (including
+    HDMI-CEC control of the attached TV/receiver) and returns immediately.
+    Fall back to the Audio interface, which waits for volume feedback from the
+    device and can time out when no volume-capable output is active.
+    """
+    remote = atv.remote_control
+    press = remote.volume_up if up else remote.volume_down
+
+    try:
+        # RemoteControl.volume_up/down are deprecated in favour of Audio, but
+        # used deliberately here; keep the DeprecationWarning off stderr, which
+        # the app treats as a fatal session error. pyatv's decorator forces the
+        # warning filter on, so capture (record=True) rather than filter.
+        with warnings.catch_warnings(record=True):
+            await press()
+        return
+    except (pyatv_exceptions.CommandError, pyatv_exceptions.NotSupportedError):
+        pass
+    except PYATV_ERROR as exc:
+        raise ControlError(str(exc)) from exc
+
+    audio = getattr(atv, "audio", None)
+    if audio is None:
+        raise ControlError("volume control not supported")
+
+    fallback = audio.volume_up if up else audio.volume_down
+    try:
+        await fallback()
+    except asyncio.TimeoutError as exc:
+        raise ControlError("volume command timed out") from exc
+    except (pyatv_exceptions.CommandError, pyatv_exceptions.NotSupportedError) as exc:
+        raise ControlError(str(exc) or "volume control not supported") from exc
+    except PYATV_ERROR as exc:
+        raise ControlError(str(exc)) from exc
 
 
 async def _invoke_play_pause(atv: AppleTV) -> None:

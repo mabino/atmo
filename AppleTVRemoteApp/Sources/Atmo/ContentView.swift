@@ -163,6 +163,10 @@ struct ContentView: View {
             viewModel.sendCommand("home")
         case "playpause", "play_pause":
             viewModel.sendCommand("play_pause")
+        case "volumeup", "volume_up":
+            viewModel.sendCommand("volume_up")
+        case "volumedown", "volume_down":
+            viewModel.sendCommand("volume_down")
         case "poweron", "turnon":
             viewModel.togglePowerState()
         case "poweroff", "turnoff":
@@ -428,6 +432,26 @@ struct ContentView: View {
             }
             .frame(maxWidth: .infinity)
             .padding(.top, 12)
+            HStack(spacing: 18) {
+                Button(action: { viewModel.sendCommand("volume_down") }) {
+                    Image(systemName: "speaker.minus")
+                        .font(.system(size: 22, weight: .semibold))
+                        .padding(4)
+                }
+                .frame(maxWidth: .infinity)
+                .accessibilityLabel("Volume Down")
+                .keyboardShortcut("-", modifiers: [.control, .command])
+
+                Button(action: { viewModel.sendCommand("volume_up") }) {
+                    Image(systemName: "speaker.plus")
+                        .font(.system(size: 22, weight: .semibold))
+                        .padding(4)
+                }
+                .frame(maxWidth: .infinity)
+                .accessibilityLabel("Volume Up")
+                .keyboardShortcut("=", modifiers: [.control, .command])
+            }
+            .frame(maxWidth: .infinity)
         }
         .buttonStyle(HighlightedControlButtonStyle())
         .disabled(!viewModel.areControlsEnabled)
@@ -508,6 +532,23 @@ struct ContentView: View {
                 }
                 .accessibilityLabel("Play/Pause")
                 .keyboardShortcut("p", modifiers: [.control, .command])
+            }
+            HStack(spacing: 12) {
+                Button(action: { viewModel.sendCommand("volume_down") }) {
+                    Image(systemName: "speaker.minus")
+                        .font(.system(size: 18, weight: .semibold))
+                        .padding(2)
+                }
+                .accessibilityLabel("Volume Down")
+                .keyboardShortcut("-", modifiers: [.control, .command])
+
+                Button(action: { viewModel.sendCommand("volume_up") }) {
+                    Image(systemName: "speaker.plus")
+                        .font(.system(size: 18, weight: .semibold))
+                        .padding(2)
+                }
+                .accessibilityLabel("Volume Up")
+                .keyboardShortcut("=", modifiers: [.control, .command])
             }
         }
         .buttonStyle(HighlightedControlButtonStyle())

@@ -19,6 +19,7 @@ class FakeRemote:
     def __init__(self):
         self.calls = []
         self.play_pause_side_effect: Optional[Exception] = None
+        self.volume_side_effect: Optional[Exception] = None
 
     async def home(self, action: InputAction) -> None:
         self.calls.append(("home", action))
@@ -51,6 +52,32 @@ class FakeRemote:
 
     async def pause(self) -> None:
         self.calls.append(("pause", None))
+
+    async def volume_up(self) -> None:
+        if self.volume_side_effect is not None:
+            raise self.volume_side_effect
+        self.calls.append(("volume_up", None))
+
+    async def volume_down(self) -> None:
+        if self.volume_side_effect is not None:
+            raise self.volume_side_effect
+        self.calls.append(("volume_down", None))
+
+
+class FakeAudio:
+    def __init__(self):
+        self.calls = []
+        self.side_effect: Optional[Exception] = None
+
+    async def volume_up(self) -> None:
+        if self.side_effect is not None:
+            raise self.side_effect
+        self.calls.append(("volume_up", None))
+
+    async def volume_down(self) -> None:
+        if self.side_effect is not None:
+            raise self.side_effect
+        self.calls.append(("volume_down", None))
 
 
 class FakePower:
@@ -101,6 +128,7 @@ class FakeAppleTV:
         self.remote_control = FakeRemote()
         self.power = power or FakePower()
         self.metadata = FakeMetadata()
+        self.audio = FakeAudio()
         self.closed = False
 
     def close(self) -> None:
@@ -166,12 +194,93 @@ class CommandPowerTests(unittest.TestCase):
                         "--identifier",
                         "Living Room",
                         "--command",
-                        "volume_up",
+                        "eject",
                     ]
                 )
 
         self.assertEqual(exit_code, 2)
         self.assertIn("unsupported command", stderr.getvalue())
+
+    def _run_command(self, command: str) -> tuple[int, str]:
+        with contextlib.ExitStack() as stack:
+            stack.enter_context(self.scan_patch)
+            stack.enter_context(self.storage_patch)
+            stack.enter_context(self.connect_patch)
+
+            stdout = io.StringIO()
+            with contextlib.redirect_stdout(stdout):
+                exit_code = cli.main(
+                    [
+                        "command",
+                        "--identifier",
+                        "Living Room",
+                        "--command",
+                        command,
+                    ]
+                )
+        return exit_code, stdout.getvalue()
+
+    def test_volume_up_invokes_remote(self) -> None:
+        exit_code, stdout = self._run_command("volume_up")
+
+        self.assertEqual(exit_code, 0)
+        payload = json.loads(stdout)
+        self.assertEqual(payload["status"], "ok")
+        self.assertEqual(payload["command"], "volume_up")
+        self.assertTrue(self.apple_tv.closed)
+        self.assertEqual(
+            self.apple_tv.remote_control.calls, [("volume_up", None)]
+        )
+        self.assertEqual(self.apple_tv.audio.calls, [])
+
+    def test_volume_down_invokes_remote(self) -> None:
+        exit_code, stdout = self._run_command("volume_down")
+
+        self.assertEqual(exit_code, 0)
+        payload = json.loads(stdout)
+        self.assertEqual(payload["status"], "ok")
+        self.assertEqual(
+            self.apple_tv.remote_control.calls, [("volume_down", None)]
+        )
+
+    def test_volume_up_falls_back_to_audio_interface(self) -> None:
+        self.apple_tv.remote_control.volume_side_effect = (
+            pyatv_exceptions.NotSupportedError("no volume button")
+        )
+
+        exit_code, stdout = self._run_command("volume_up")
+
+        self.assertEqual(exit_code, 0)
+        payload = json.loads(stdout)
+        self.assertEqual(payload["status"], "ok")
+        self.assertEqual(self.apple_tv.audio.calls, [("volume_up", None)])
+
+    def test_volume_audio_timeout_reports_error(self) -> None:
+        self.apple_tv.remote_control.volume_side_effect = (
+            pyatv_exceptions.NotSupportedError("no volume button")
+        )
+        self.apple_tv.audio.side_effect = TimeoutError()
+
+        with contextlib.ExitStack() as stack:
+            stack.enter_context(self.scan_patch)
+            stack.enter_context(self.storage_patch)
+            stack.enter_context(self.connect_patch)
+
+            stderr = io.StringIO()
+            with contextlib.redirect_stderr(stderr):
+                exit_code = cli.main(
+                    [
+                        "command",
+                        "--identifier",
+                        "Living Room",
+                        "--command",
+                        "volume_down",
+                    ]
+                )
+
+        self.assertEqual(exit_code, 2)
+        self.assertIn("volume command timed out", stderr.getvalue())
+        self.assertTrue(self.apple_tv.closed)
 
     def test_power_on_calls_turn_on(self) -> None:
         with contextlib.ExitStack() as stack:

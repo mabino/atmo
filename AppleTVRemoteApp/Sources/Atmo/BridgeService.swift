@@ -1076,6 +1076,12 @@ actor BridgeService: BridgeServiceProtocol {
             return true
         }
 
+        // Library deprecation chatter (e.g. pyatv's RemoteControl volume
+        // methods) is advisory, never a protocol failure.
+        if message.contains("DeprecationWarning") {
+            return true
+        }
+
         // sitecustomize problems are startup warnings, not protocol failures;
         // site.py already swallowed the exception and the interpreter is fine.
         // (Covers both python's "Error in sitecustomize;…" report and our own
