@@ -4,6 +4,21 @@
     <channel>
         <title>Atmo</title>
         <item>
+            <title>1.7.1</title>
+            <pubDate>Sun, 23 Aug 2026 11:16:18 -0400</pubDate>
+            <sparkle:version>1.7.1</sparkle:version>
+            <sparkle:shortVersionString>1.7.1</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
+            <description><![CDATA[<h2>Atmo 1.7.1</h2>
+<h3>Icon refresh</h3>
+<ul>
+  <li>The app icon's remote is no longer a blank white pill: it now shows a touchpad ring, buttons, and a volume pill, and fills the icon squircle edge to edge. The website favicon and logo match the new design.</li>
+</ul>
+]]></description>
+            <enclosure url="https://github.com/binoio/atmo/releases/download/v1.7.1/Atmo-1.7.1.zip" length="70012565" type="application/octet-stream" sparkle:edSignature="pPU6VUuKcLcKeHHe9SSkgB6xW7P4JBZdK4QPyt+0KHaA2+yvSW3uObXsGgo57qn0wjOCaLj8R+qR0aHMT7w3AQ=="/>
+        </item>
+        <item>
             <title>1.7.0</title>
             <pubDate>Tue, 18 Aug 2026 21:28:36 -0400</pubDate>
             <sparkle:version>1.7.0</sparkle:version>
