@@ -1,0 +1,4 @@
+## Atmo 1.7.1
+
+### Icon refresh
+- The app icon's remote is no longer a blank white pill: it now shows a touchpad ring, buttons, and a volume pill, and fills the icon squircle edge to edge. The website favicon and logo match the new design.
